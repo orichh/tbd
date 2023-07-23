@@ -12,7 +12,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
         .header("Content-Type", "application/json")
         .body(
             json!({
-              "message": "hello, world"
+              "message": "hello, world!!!! hell yea i'm working"
             })
             .to_string()
             .into(),
