@@ -7,7 +7,7 @@ export default function Contact() {
   return (
     <article className="w-full p-8 sm:px-14 md:px-24 lg:px-60">
       <h2 className="font-itcWillow text-6xl sm:text-6xl text-center">
-        Contacts
+        Contacts. yes?
       </h2>
 
       <div className="flex flex-col items-center">
