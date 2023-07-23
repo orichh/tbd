@@ -2,10 +2,6 @@
   "functions": {
     "api/**/*.rs": {
       "runtime": "vercel-rust@4.0.2"
-    },
-    "src/app/api/test/route.ts": {
-      "memory": 1024,
-      "maxDuration": 30
     }
   }
 }
