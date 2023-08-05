@@ -16,12 +16,20 @@ reqwest = { version = "0.11.12", features = ["json", "stream"] }
 # Documentation: https://docs.rs/vercel_runtime/latest/vercel_runtime
 # vercel_runtime = { version = "1.0.2" }
 vercel_runtime = "1.0.2"
+time = "0.3.25"
+chrono = "0.4.26"
+chrono-tz = "0.8.3"
 
 # You can specify a library for shared logic here (optional)
-# [lib]
-# path = "src-rs/lib.rs"
+[lib]
+path = "api/models.rs"
+
 
 # Each handler has to be specified as [[bin]]
 [[bin]]
 name = "hello"
 path = "api/hello.rs"
+
+[[bin]]
+name = "get_user"
+path = "api/get_user.rs"
