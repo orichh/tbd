@@ -1,4 +1,3 @@
-mod models;
 use chrono::{DateTime, Utc};
 use chrono_tz::Tz;
 use models::User;
