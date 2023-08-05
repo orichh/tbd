@@ -1,6 +1,4 @@
 "use client";
-
-import Video from "@/components/Video";
 import { useState } from "react";
 
 type Task = {
@@ -58,7 +56,10 @@ export default function Home() {
             return (
               <div key={i}>
                 <li>
-                  {task.name} - {task.isCompleted.toString()}
+                  <span className={`${task.isCompleted && "line-through"}`}>
+                    {task.name}
+                  </span>
+                  - {task.isCompleted.toString()}
                 </li>
                 <button onClick={(e) => handleUpdateTask(e, i)}>update</button>
               </div>
