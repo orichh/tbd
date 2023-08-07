@@ -23,7 +23,7 @@ chrono-tz = "0.8.3"
 # You can specify a library for shared logic here (optional)
 [lib]
 name = "models"
-path = "api/models.rs"
+path = "models.rs"
 
 # [[bin]]
 # name = "models"
