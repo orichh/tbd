@@ -1,4 +1,5 @@
 "use client";
+import { initializeNewUser } from "@/util/api/user";
 import { useState } from "react";
 
 type Task = {
@@ -50,6 +51,21 @@ export default function Home() {
   return (
     <div className="flex w-full flex-col">
       <div className="flex h-screen flex-col">
+        <button
+          onClick={async () => {
+            // alert("hit");
+            const response = await initializeNewUser(
+              "1cedcf8d-c6d3-45ac-b724-e83d24d0509d"
+            );
+            if (response) {
+              alert("success");
+            } else {
+              alert("failed");
+            }
+          }}
+        >
+          initialize user days
+        </button>
         <h1>tasks</h1>
         <ul>
           {tasks.map((task, i) => {

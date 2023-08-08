@@ -19,6 +19,7 @@ vercel_runtime = "1.0.2"
 time = "0.3.25"
 chrono = "0.4.26"
 chrono-tz = "0.8.3"
+tokio-postgres = "0.7.8"
 
 # You can specify a library for shared logic here (optional)
 [lib]

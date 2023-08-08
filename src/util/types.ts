@@ -3,7 +3,8 @@ export type Task = {
   name: string;
   created_at: Date;
   is_completed: boolean;
-  time_spent_in_minutes: number;
+  time_spent_in_minutes_actual: number;
+  time_spent_in_minutes_estimate: number;
   completed_at: Date;
   notes: string;
   display_order: number;
@@ -25,10 +26,18 @@ export type User = {
 
 export type UsersDay = {
   id: number;
-  user_id: number;
+  user_id: string;
   date: Date;
   total_tasks: number;
   total_tasks_completed: number;
   all_tasks_completed: boolean;
   tasks: Task[];
+};
+
+export type UsersDayDTO = {
+  user_id: string;
+  date: Date;
+  total_tasks: number;
+  total_tasks_completed: number;
+  all_tasks_completed: boolean;
 };

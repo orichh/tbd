@@ -1,3 +1,7 @@
+export const SUPABASE_TABLES = Object.freeze({
+  USERS_DAYS: "Users_Days"
+});
+
 export const routes = Object.freeze({
   HOME: "/",
   ABOUT: "/about",
