@@ -1,6 +1,5 @@
 import { SUPABASE_TABLES } from "../constants";
-import { formatDateForPostgres } from "../helpers";
-import { Task, UsersDay, UsersDayDTO } from "../types";
+import { ApiResponse, Task, TaskDTO, UsersDay, UsersDayDTO } from "../types";
 import { supabase } from "./supabaseClient";
 
 /**
@@ -16,35 +15,56 @@ export const bulkInsertUsersDays = async (usersDays: UsersDayDTO[]) => {
   return error;
 };
 
-export const getUsersDay = async (userId: string, date: Date) => {
-  const postgresDate = formatDateForPostgres(date);
+export const getTasksByUsersDayIdAsync = async (usersDayId: number) => {
+  const { data, error } = await supabase
+    .from(SUPABASE_TABLES.TASKS)
+    .select("*")
+    .eq("associated_day_id", usersDayId)
+    .order("display_order", { ascending: true });
 
-  const { data: usersDays, error: usersDayError } = await supabase
+  if (error) {
+    return [];
+  }
+
+  return data as Task[];
+};
+
+export const getUsersDayAsync = async (
+  userId: string,
+  postgresDate: string
+) => {
+  const { data, error } = await supabase
     .from(SUPABASE_TABLES.USERS_DAYS)
     .select("*")
     .eq("user_id", userId)
     .eq("date", postgresDate);
 
-  if (usersDayError) {
+  if (error) {
     return null;
   }
 
-  const usersDay = usersDays[0] as UsersDay;
+  return data[0] as UsersDay;
+};
 
-  const { data: tasks, error: tasksError } = await supabase
+export const insertTaskAsync = async (
+  task: TaskDTO
+): Promise<ApiResponse<Task | null>> => {
+  const { data, error } = await supabase
     .from(SUPABASE_TABLES.TASKS)
-    .select("*")
-    .eq("associated_day_id", usersDay?.id);
+    .insert(task)
+    .select();
 
-  const data: UsersDay = {
-    id: usersDay.id,
-    user_id: userId,
-    date: usersDay.date,
-    total_tasks: usersDay.total_tasks,
-    total_tasks_completed: usersDay.total_tasks_completed,
-    all_tasks_completed: usersDay.all_tasks_completed,
-    tasks: tasks as Task[]
+  const response: ApiResponse<Task | null> = {
+    data: null,
+    error: null
   };
 
-  return data;
+  if (error) {
+    response.error = error;
+    return response;
+  }
+
+  response.data = data[0] as Task;
+
+  return response;
 };
