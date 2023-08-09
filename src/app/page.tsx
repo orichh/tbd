@@ -37,7 +37,7 @@ const sampleData: UserDay[] = [
 export default function Home() {
   const [counter, setCounter] = useState(0);
   const [tasks, setTasks] = useState(sampleTasks);
-  const [usersDay, setUsersDay] = useState<UsersDay>();
+  const [usersDay, setUsersDay] = useState<UsersDay | null>(null);
   const [date, setDate] = useState<Date>(new Date());
 
   useEffect(() => {

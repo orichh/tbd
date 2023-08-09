@@ -25,6 +25,10 @@ export const getUsersDay = async (userId: string, date: Date) => {
     .eq("user_id", userId)
     .eq("date", postgresDate);
 
+  if (usersDayError) {
+    return null;
+  }
+
   const usersDay = usersDays[0] as UsersDay;
 
   const { data: tasks, error: tasksError } = await supabase
