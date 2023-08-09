@@ -1,19 +1,11 @@
-export type Task = {
+import { PostgrestError } from "@supabase/supabase-js";
+
+export type Task = TaskDTO & {
   id: number;
-  name: string;
-  created_at: Date;
-  is_completed: boolean;
-  time_spent_in_minutes_actual: number;
-  time_spent_in_minutes_estimate: number;
-  completed_at: Date;
-  notes: string;
-  display_order: number;
-  user_id: number;
-  associated_day_id: number;
 };
 
 export type User = {
-  id: number;
+  id: string;
   updated_at: Date;
   username: string;
   full_name: string;
@@ -41,3 +33,21 @@ export type UsersDayDTO = {
   total_tasks_completed: number;
   all_tasks_completed: boolean;
 };
+
+// use to insert record
+export type TaskDTO = {
+  name: string;
+  is_completed: boolean;
+  time_spent_in_minutes_actual: number;
+  time_spent_in_minutes_estimate: number;
+  completed_at: Date | null;
+  notes: string;
+  display_order: number;
+  user_id: string;
+  associated_day_id: number;
+};
+
+export interface ApiResponse<TData> {
+  data: TData;
+  error: PostgrestError | null;
+}
