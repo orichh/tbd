@@ -71,16 +71,16 @@ export default function RootLayout({
       <body className={inter.className}>
         <ContextProvider>
           <div className="flex flex-col w-full font-itcAvantGardeGothicBk">
-            <SideBar />
-            <BlurContainer />
+            {/* <SideBar /> */}
+            {/* <BlurContainer /> */}
 
-            <NavBar />
+            {/* <NavBar /> */}
 
             <main className="flex flex-col items-center justify-between bg-gray-100">
               {children}
             </main>
 
-            <Footer />
+            {/* <Footer /> */}
           </div>
         </ContextProvider>
       </body>
