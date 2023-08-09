@@ -1,6 +1,8 @@
 "use client";
 import { initializeNewUser } from "@/util/api/user";
-import { useState } from "react";
+import { getUsersDay } from "@/util/supabase";
+import { UsersDay } from "@/util/types";
+import { useEffect, useState } from "react";
 
 type Task = {
   id: number;
@@ -35,6 +37,23 @@ const sampleData: UserDay[] = [
 export default function Home() {
   const [counter, setCounter] = useState(0);
   const [tasks, setTasks] = useState(sampleTasks);
+  const [usersDay, setUsersDay] = useState<UsersDay>();
+  const [date, setDate] = useState<Date>(new Date());
+
+  useEffect(() => {
+    (async () => {
+      const test = await getUsersDay(
+        "1cedcf8d-c6d3-45ac-b724-e83d24d0509d",
+        date
+      );
+
+      setUsersDay(test);
+    })();
+  }, [date]);
+
+  useEffect(() => {
+    console.log("🚀 ~ file: page.tsx:59 ~ Home ~ usersDay:", usersDay);
+  }, [usersDay]);
 
   const handleUpdateTask = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -64,18 +83,18 @@ export default function Home() {
             }
           }}
         >
-          initialize user days
+          initialize user dayssss
         </button>
         <h1>tasks</h1>
         <ul>
-          {tasks.map((task, i) => {
+          {usersDay?.tasks.map((task, i) => {
             return (
               <div key={i}>
                 <li>
-                  <span className={`${task.isCompleted && "line-through"}`}>
+                  <span className={`${task.is_completed && "line-through"}`}>
                     {task.name}
                   </span>
-                  - {task.isCompleted.toString()}
+                  - {task.is_completed.toString()}
                 </li>
                 <button onClick={(e) => handleUpdateTask(e, i)}>update</button>
               </div>

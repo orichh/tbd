@@ -1,5 +1,6 @@
 export const SUPABASE_TABLES = Object.freeze({
-  USERS_DAYS: "Users_Days"
+  USERS_DAYS: "Users_Days",
+  TASKS: "Tasks"
 });
 
 export const routes = Object.freeze({
