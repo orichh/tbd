@@ -1,4 +1,13 @@
-import { bulkInsertUsersDays } from "../supabase";
+import {
+  formatDateForPostgres,
+  getAllDaysBetweenTodayAndYear,
+  getEndYear
+} from "../helpers";
+import {
+  bulkInsertUsersDays,
+  getTasksByUsersDayIdAsync,
+  getUsersDayAsync
+} from "../supabase";
 import { UsersDayDTO } from "../types";
 
 export const initializeNewUser = async (userId: string) => {
@@ -12,7 +21,7 @@ export const initializeNewUser = async (userId: string) => {
       endYear
     );
 
-    const userDays = getUsersDays(userId, allDaysBetweenTodayAndYear);
+    const userDays = getUsersDaysToInsert(userId, allDaysBetweenTodayAndYear);
 
     await bulkInsertUsersDays(userDays);
     return true;
@@ -21,15 +30,7 @@ export const initializeNewUser = async (userId: string) => {
   }
 };
 
-const getEndYear = (currentYear: number) => {
-  if (currentYear % 5 === 0) {
-    return currentYear + 5;
-  }
-
-  return Math.ceil(currentYear / 5) * 5;
-};
-
-const getUsersDays = (
+export const getUsersDaysToInsert = (
   userId: string,
   allDaysBetweenTodayAndYear: Date[]
 ): UsersDayDTO[] => {
@@ -48,15 +49,18 @@ const getUsersDays = (
   return usersDays;
 };
 
-function getAllDaysBetweenTodayAndYear(currentDate: Date, endYear: number) {
-  const endDate = new Date(endYear, 0, 1); // Year, Month (0-11), Day
-  endDate.setDate(endDate.getDate() - 1); // Go back one day to exclude the first day of the target year
+export const getUsersDay = async (userId: string, date: Date) => {
+  const postgresDate = formatDateForPostgres(date);
 
-  const daysBetween = [];
-  while (currentDate <= endDate) {
-    daysBetween.push(new Date(currentDate));
-    currentDate.setDate(currentDate.getDate() + 1);
+  const usersDay = await getUsersDayAsync(userId, postgresDate);
+
+  if (!usersDay || usersDay === null) {
+    return null;
   }
 
-  return daysBetween;
-}
+  const tasks = await getTasksByUsersDayIdAsync(usersDay.id);
+
+  usersDay.tasks = tasks;
+
+  return usersDay;
+};
