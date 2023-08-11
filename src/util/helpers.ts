@@ -89,3 +89,16 @@ export function compareDatesWithoutTime(date1: Date, date2: Date) {
     return 1; // date1 is later
   }
 }
+
+/**
+ * Removes the first occurrence of a specified value from a new array.
+ *
+ * @template T - The type of elements in the array.
+ * @param {Array<T>} arr - The array from which to remove the value.
+ * @param {T} value - The value to be removed from the array.
+ * @returns {Array<T>} A new array with the specified value removed, or the original array if the value was not found.
+ */
+export function removeItem<T>(arr: Array<T>, value: T): Array<T> {
+  const newArray = arr.filter((item) => item !== value);
+  return newArray;
+}

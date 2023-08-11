@@ -1,7 +1,11 @@
 "use client";
 import { getUsersDay, initializeNewUser } from "@/util/api/user";
-import { compareDatesWithoutTime } from "@/util/helpers";
-import { insertTaskAsync } from "@/util/supabase";
+import { compareDatesWithoutTime, removeItem } from "@/util/helpers";
+import {
+  deleteTaskAsync,
+  insertTaskAsync,
+  updateTaskCompletionStatusAsync
+} from "@/util/supabase";
 import { Task, TaskDTO, User, UsersDay } from "@/util/types";
 import { useEffect, useState } from "react";
 
@@ -17,11 +21,12 @@ export default function Home() {
     lose_streak_current: 0,
     lose_streak_longest: 0
   });
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [usersDay, setUsersDay] = useState<UsersDay | null>(null);
   const [date, setDate] = useState<Date>(new Date());
   const [newTaskName, setNewTaskName] = useState<string>("");
   const [isLoadingUsersDay, setIsLoadingUsersDay] = useState<boolean>(false);
+  const [isLoadingTaskAction, setIsLoadingTaskAction] =
+    useState<boolean>(false);
   const today = new Date();
   const numTotalTasks = usersDay?.tasks?.length as number;
   const numTasksCompleted = usersDay?.tasks.filter(
@@ -37,15 +42,24 @@ export default function Home() {
     })();
   }, [date, user.id]);
 
-  const handleUpdateTask = (
+  const handleUpdateTask = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    task: Task,
     index: number
   ) => {
-    // const oldTasks = [...tasks];
-    // const updatedTask = oldTasks[index];
-    // updatedTask.is_completed = !oldTasks[index].is_completed;
-    // oldTasks[index] = updatedTask;
-    // setTasks(oldTasks);
+    setIsLoadingTaskAction(true);
+    const { data, error } = await updateTaskCompletionStatusAsync(
+      task.id,
+      !task.is_completed
+    );
+
+    if (error) {
+      alert("error inserting task");
+    } else {
+      updateTaskInListState(data as Task, index);
+    }
+
+    setIsLoadingTaskAction(false);
   };
 
   useEffect(() => {
@@ -76,14 +90,49 @@ export default function Home() {
     if (error) {
       alert("error inserting task");
     } else {
-      alert("success");
+      setNewTaskName("");
       addToTaskListState(data as Task);
+    }
+  };
+
+  const deleteTaskFromUsersDay = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    task: Task,
+    index: number
+  ) => {
+    try {
+      setIsLoadingTaskAction(true);
+      const { data, error } = await deleteTaskAsync(task.id);
+      if (error) {
+        alert("error deleting task");
+      } else {
+        deleteTaskInListState(task, index);
+      }
+    } finally {
+      setIsLoadingTaskAction(false);
     }
   };
 
   const addToTaskListState = (task: Task) => {
     const updatedUsersDay = { ...(usersDay as UsersDay) };
     updatedUsersDay.tasks = [...(updatedUsersDay?.tasks as Task[]), task];
+
+    setUsersDay(updatedUsersDay);
+  };
+
+  const updateTaskInListState = (task: Task, index: number) => {
+    const updatedUsersDay = { ...(usersDay as UsersDay) };
+    updatedUsersDay.tasks = [...(updatedUsersDay?.tasks as Task[])];
+    updatedUsersDay.tasks[index] = task;
+
+    setUsersDay(updatedUsersDay);
+  };
+
+  const deleteTaskInListState = (task: Task, index: number) => {
+    const updatedUsersDay = { ...(usersDay as UsersDay) };
+    updatedUsersDay.tasks = updatedUsersDay?.tasks.filter(
+      (t) => t.id !== task.id
+    );
 
     setUsersDay(updatedUsersDay);
   };
@@ -124,7 +173,6 @@ export default function Home() {
 
           <button
             onClick={async () => {
-              // alert("hit");
               const response = await initializeNewUser(user.id);
               if (response) {
                 alert("success");
@@ -156,10 +204,13 @@ export default function Home() {
                       {task.name}
                     </span>
                     - {task.is_completed.toString()}
+                    <button onClick={(e) => handleUpdateTask(e, task, i)}>
+                      update
+                    </button>
+                    <button onClick={(e) => deleteTaskFromUsersDay(e, task, i)}>
+                      delete
+                    </button>
                   </li>
-                  <button onClick={(e) => handleUpdateTask(e, i)}>
-                    update
-                  </button>
                 </div>
               );
             })}

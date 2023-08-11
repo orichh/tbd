@@ -68,3 +68,51 @@ export const insertTaskAsync = async (
 
   return response;
 };
+
+export const updateTaskCompletionStatusAsync = async (
+  taskId: number,
+  isCompleted: boolean
+): Promise<ApiResponse<Task | null>> => {
+  const completedAt = isCompleted ? new Date() : null;
+
+  const { data, error } = await supabase
+    .from(SUPABASE_TABLES.TASKS)
+    .update({ is_completed: isCompleted, completed_at: completedAt })
+    .eq("id", taskId)
+    .select();
+
+  const response: ApiResponse<Task | null> = {
+    data: null,
+    error: null
+  };
+
+  if (error) {
+    response.error = error;
+    return response;
+  }
+
+  response.data = data[0] as Task;
+
+  return response;
+};
+
+export const deleteTaskAsync = async (
+  taskId: number
+): Promise<ApiResponse<boolean | null>> => {
+  const { data, error } = await supabase
+    .from(SUPABASE_TABLES.TASKS)
+    .delete()
+    .eq("id", taskId);
+
+  const response: ApiResponse<boolean | null> = {
+    data: null,
+    error: null
+  };
+
+  if (error) {
+    response.error = error;
+    return response;
+  }
+
+  return response;
+};

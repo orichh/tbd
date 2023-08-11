@@ -54,7 +54,7 @@ const itcAvantGardeGothicBk = localFont({
 });
 
 export const metadata = {
-  title: "Red Camp Hancock",
+  title: "task bros",
   description: "A nice place to be"
 };
 
