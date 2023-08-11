@@ -1,4 +1,5 @@
 "use client";
+import { Checkbox } from "@/components/Checkbox";
 import { getUsersDay, initializeNewUser } from "@/util/api/user";
 import { compareDatesWithoutTime, removeItem } from "@/util/helpers";
 import {
@@ -27,6 +28,8 @@ export default function Home() {
   const [isLoadingUsersDay, setIsLoadingUsersDay] = useState<boolean>(false);
   const [isLoadingTaskAction, setIsLoadingTaskAction] =
     useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
   const today = new Date();
   const numTotalTasks = usersDay?.tasks?.length as number;
   const numTasksCompleted = usersDay?.tasks.filter(
@@ -43,7 +46,9 @@ export default function Home() {
   }, [date, user.id]);
 
   const handleUpdateTask = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    e:
+      | React.ChangeEventHandler<HTMLInputElement>
+      | React.MouseEvent<HTMLDivElement, MouseEvent>,
     task: Task,
     index: number
   ) => {
@@ -143,35 +148,38 @@ export default function Home() {
 
   return (
     <div className="flex w-full flex-col">
-      {isLoadingUsersDay ? (
-        <div>loading</div>
-      ) : (
-        <div className="flex h-screen flex-col">
-          <div>
-            <button
-              onClick={() => {
-                const newDate: Date = new Date();
-                newDate.setDate(date.getDate() - 1);
+      <div className="flex h-screen flex-col">
+        {isLoadingUsersDay && <div>loading</div>}
 
-                setDate(newDate);
-              }}
-            >
-              previous
-            </button>
-            <h1>{date.toDateString()}</h1>
-            <button
-              onClick={() => {
-                const newDate: Date = new Date();
-                newDate.setDate(date.getDate() + 1);
-
-                setDate(newDate);
-              }}
-            >
-              next
-            </button>
-          </div>
-
+        <div className="flex flex-row w-full space-x-20 justify-center">
           <button
+            className=""
+            onClick={() => {
+              const newDate: Date = new Date();
+              newDate.setDate(date.getDate() - 1);
+
+              setIsEditing(false);
+              setDate(newDate);
+            }}
+          >
+            previous
+          </button>
+          <h1 className="">{date.toDateString()}</h1>
+          <button
+            className=""
+            onClick={() => {
+              const newDate: Date = new Date();
+              newDate.setDate(date.getDate() + 1);
+
+              setIsEditing(false);
+              setDate(newDate);
+            }}
+          >
+            next
+          </button>
+        </div>
+
+        {/* <button
             onClick={async () => {
               const response = await initializeNewUser(user.id);
               if (response) {
@@ -182,8 +190,9 @@ export default function Home() {
             }}
           >
             initialize user days
-          </button>
+          </button> */}
 
+        <div className="flex flex-col w-full space-y-10 items-center">
           <h1>
             {numTotalTasks > 0 ? (
               <span>
@@ -194,22 +203,41 @@ export default function Home() {
             )}
           </h1>
 
+          <div
+            onClick={() => setIsEditing(!isEditing)}
+            className="cursor-pointer"
+          >
+            <h1>edit</h1>
+          </div>
+
           <ul>
             {usersDay?.tasks.map((task, i) => {
               return (
-                <div key={i}>
+                <div
+                  key={i}
+                  onClick={(e) => handleUpdateTask(e, task, i)}
+                  className="cursor-pointer"
+                >
                   <li>
-                    {task.display_order} -
+                    <Checkbox
+                      isChecked={task.is_completed}
+                      onChange={(
+                        e: React.ChangeEventHandler<HTMLInputElement>
+                      ) => handleUpdateTask(e, task, i)}
+                    />
                     <span className={`${task.is_completed && "line-through"}`}>
                       {task.name}
                     </span>
-                    - {task.is_completed.toString()}
-                    <button onClick={(e) => handleUpdateTask(e, task, i)}>
-                      update
-                    </button>
-                    <button onClick={(e) => deleteTaskFromUsersDay(e, task, i)}>
-                      delete
-                    </button>
+
+                    {isEditing && (
+                      <>
+                        <button
+                          onClick={(e) => deleteTaskFromUsersDay(e, task, i)}
+                        >
+                          - delete
+                        </button>
+                      </>
+                    )}
                   </li>
                 </div>
               );
@@ -232,7 +260,7 @@ export default function Home() {
             </div>
           )}
         </div>
-      )}
+      </div>
 
       <p className="break-all"></p>
     </div>
