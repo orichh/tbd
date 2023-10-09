@@ -1,6 +1,6 @@
 "use client";
 
-import { AppContextType } from "@/util/context";
+import { AppContext } from "@/util/context";
 import { useContext } from "react";
 
 export default function BlurContainer() {
