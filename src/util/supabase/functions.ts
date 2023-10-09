@@ -35,7 +35,11 @@ export const getUsersDayAsync = async (
 ) => {
   const { data, error } = await supabase
     .from(SUPABASE_TABLES.USERS_DAYS)
-    .select("*")
+    .select(
+      `*,
+    ${SUPABASE_TABLES.TASKS} (*)
+    `
+    )
     .eq("user_id", userId)
     .eq("date", postgresDate);
 
@@ -115,4 +119,23 @@ export const deleteTaskAsync = async (
   }
 
   return response;
+};
+
+export const updateUsersDayAsync = async (
+  usersDayId: number,
+  isCompleted: boolean
+): Promise<boolean> => {
+  const { data, error } = await supabase
+    .from(SUPABASE_TABLES.USERS_DAYS)
+    .update({ all_habits_completed: isCompleted })
+    .eq("id", usersDayId);
+
+  console.log("🚀 ~ file: functions.ts:132 ~ data:", data);
+  console.log("🚀 ~ file: functions.ts:129 ~ error:", error);
+
+  if (error) {
+    return false;
+  }
+
+  return true;
 };

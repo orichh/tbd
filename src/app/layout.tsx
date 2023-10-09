@@ -6,6 +6,7 @@ import ContextProvider from "@/components/ContextProvider";
 import SideBar from "@/components/SideBar";
 import BlurContainer from "@/components/BlurContainer";
 import localFont from "next/font/local";
+import { NewAppContextProvider } from "@/util/context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -69,20 +70,22 @@ export default function RootLayout({
       className={`${libreBaskerville.variable} font-serif ${shrikhand.variable} font-shrikhand ${itcWillow.variable} font-itcWillow ${itcAvantGardeGothicBk.variable} font-itcAvantGardeGothicBk`}
     >
       <body className={inter.className}>
-        <ContextProvider>
-          <div className="flex flex-col w-full font-itcAvantGardeGothicBk">
-            {/* <SideBar /> */}
-            {/* <BlurContainer /> */}
+        <NewAppContextProvider>
+          <ContextProvider>
+            <div className="flex flex-col w-full font-itcAvantGardeGothicBk">
+              {/* <SideBar /> */}
+              {/* <BlurContainer /> */}
 
-            {/* <NavBar /> */}
+              {/* <NavBar /> */}
 
-            <main className="flex flex-col items-center justify-between bg-gray-100">
-              {children}
-            </main>
+              <main className="flex flex-col items-center justify-between bg-gray-100">
+                {children}
+              </main>
 
-            {/* <Footer /> */}
-          </div>
-        </ContextProvider>
+              {/* <Footer /> */}
+            </div>
+          </ContextProvider>
+        </NewAppContextProvider>
       </body>
     </html>
   );

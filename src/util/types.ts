@@ -24,6 +24,7 @@ export type UsersDay = {
   total_tasks_completed: number;
   all_tasks_completed: boolean;
   tasks: Task[];
+  all_habits_completed: boolean;
 };
 
 export type UsersDayDTO = {
@@ -51,3 +52,18 @@ export interface ApiResponse<TData> {
   data: TData;
   error: PostgrestError | null;
 }
+
+export type Habit = {
+  id: number;
+  created_at: Date;
+  name: string;
+  is_completed: boolean;
+  sunday: boolean;
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+  saturday: boolean;
+  user_id: string;
+};

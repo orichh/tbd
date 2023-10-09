@@ -3,11 +3,7 @@ import {
   getAllDaysBetweenTodayAndYear,
   getEndYear
 } from "../helpers";
-import {
-  bulkInsertUsersDays,
-  getTasksByUsersDayIdAsync,
-  getUsersDayAsync
-} from "../supabase";
+import { bulkInsertUsersDays, getUsersDayAsync } from "../supabase";
 import { UsersDayDTO } from "../types";
 
 export const initializeNewUser = async (userId: string) => {
@@ -57,10 +53,6 @@ export const getUsersDay = async (userId: string, date: Date) => {
   if (!usersDay || usersDay === null) {
     return null;
   }
-
-  const tasks = await getTasksByUsersDayIdAsync(usersDay.id);
-
-  usersDay.tasks = tasks;
 
   return usersDay;
 };

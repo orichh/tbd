@@ -1,6 +1,6 @@
 "use client";
 
-import { AppContext } from "@/util/context";
+import { AppContextType } from "@/util/context";
 import { useContext } from "react";
 
 type Props = {

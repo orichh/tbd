@@ -1,7 +1,7 @@
 "use client";
 
 import { routes } from "@/util/constants";
-import { AppContext } from "@/util/context";
+import { AppContextType } from "@/util/context";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext, useEffect, useRef } from "react";
