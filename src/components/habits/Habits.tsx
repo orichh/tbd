@@ -42,7 +42,7 @@ export default function Habits() {
         </span>
       </h1>
 
-      <div>
+      <div className="overflow-scroll">
         {habits.length > 0 ? (
           habits.map((h, i) => {
             return (
