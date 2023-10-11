@@ -65,7 +65,7 @@ export default function Tasks() {
       time_spent_in_minutes_estimate: 0,
       completed_at: null,
       notes: "",
-      display_order: (usersDay?.tasks.length as number) + 1,
+      display_order: (usersDay?.total_tasks as number) + 1,
       user_id: user!.id,
       associated_day_id: usersDay?.id as number
     };
